@@ -5,6 +5,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+    , isConnected(false)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -47,6 +48,25 @@ void MainWindow::refresh_com_detection()
         if (!availablePortNames.contains(currentPortName)) {
             ui->com_comboBox->removeItem(i);
             --i;
+            if(isConnected == true){
+                qDebug() << "COM HAS BEEN DECONNECTED";
+                ui->label_connexion_status->setText("Disconnected !");
+                ui->label_connexion_status->setStyleSheet("QLabel { color : red; }");
+
+                isConnected = false;
+                if(arduinoSerial){
+                    arduinoSerial = nullptr;
+                    delete arduinoSerial;
+                }
+
+                // On débloque les boutons pour pouvoir relancer une connexion
+                ui->connect_button->setEnabled(true);
+                ui->com_comboBox->setEnabled(true);
+                ui->baud_comboBox->setEnabled(true);
+                ui->plainTextEdit->setEnabled(false);
+                // On supprime le droit à l'utilisateur d'envoyer des messages sur le port serie
+                ui->send_button->setEnabled(false);
+            }
         }
     }
 
@@ -118,12 +138,19 @@ void MainWindow::on_connect_button_clicked()
     qDebug() << "Connexion with COM: " << COMSelectionned << " / Baud Rate: " << selectedBaudRate << '\n';
     arduinoSerial = new seriallink(COMSelectionned, baudRateCombotBox);
 
+    // Ajouter verification de validité de pointeur ici
+
     // CONNECTION SERIE OK :)
     if(arduinoSerial->openConnection()){
+        isConnected = true;
         ui->label_connexion_status->setText("Connected");
         ui->label_connexion_status->setStyleSheet("QLabel { color : green; }");
+        // On bloque les boutons pour eviter de se connecter plusieurs fois
         ui->connect_button->setEnabled(false);
+        ui->com_comboBox->setEnabled(false);
+        ui->baud_comboBox->setEnabled(false);
         ui->plainTextEdit->setEnabled(true);
+        // On permet à l'utilisateur d'envoyer des messages sur le port serie
         ui->send_button->setEnabled(true);
     }
     // CONNECTION SERIE NON OK :(
@@ -131,12 +158,5 @@ void MainWindow::on_connect_button_clicked()
         ui->label_connexion_status->setStyleSheet("QLabel { color : red; }");
         ui->label_connexion_status->setText("Connexion fail !");
     }
-}
-
-void MainWindow::on_TESTBUTTON_clicked()
-{
-    QByteArray data;
-    arduinoSerial->gotNewData(data);
-    ui->textBrowser->append(data);
 }
 

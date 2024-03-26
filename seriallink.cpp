@@ -7,6 +7,7 @@ seriallink::seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObje
     // Initialisation of the serial communication
     _serial.setPortName(com);
     _serial.setBaudRate(baudrate);
+    // Per default
     _serial.setDataBits(QSerialPort::Data8);
     _serial.setParity(QSerialPort::NoParity);
     _serial.setStopBits(QSerialPort::OneStop);

@@ -20,6 +20,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    bool isConnected; // Connected to a serial instance
+
 public slots:
     //void updateGUI(QByteArray data);
 
@@ -31,8 +33,6 @@ private slots:
 
     void refresh_com_detection();
     void on_connect_button_clicked();
-
-    void on_TESTBUTTON_clicked();
 
 private:
     Ui::MainWindow *ui;
