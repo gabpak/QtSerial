@@ -20,10 +20,7 @@ public:
     bool isOpen();
     bool isWritable();
     bool isReadable();
-
-
-private slots:
-    void newData(); // Called when a signal is received
+    void read(); // Called when a signal is received
 
 signals:
     void gotNewData(QByteArray data);

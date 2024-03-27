@@ -14,7 +14,7 @@ seriallink::seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObje
     _serial.setFlowControl(QSerialPort::NoFlowControl);
 
                             // Signal                       // Slot
-    connect(&_serial, &QSerialPort::readyRead, this, &seriallink::newData);
+    connect(&_serial, &QSerialPort::readyRead, this, &seriallink::read);
 }
 
 seriallink::~seriallink(){
@@ -53,7 +53,8 @@ bool seriallink::isReadable(){
     return _serial.isReadable();
 }
 
-void seriallink::newData(){
-    emit gotNewData(_serial.readAll());
-    qDebug() << _serial.readAll();
+void seriallink::read(){
+    QByteArray dataReceived = _serial.readAll();
+    qDebug() << dataReceived;
+    emit gotNewData(dataReceived);
 }

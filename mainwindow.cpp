@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     qtimerCom = new QTimer(this);
     connect(qtimerCom, &QTimer::timeout, this, &MainWindow::refresh_com_detection);
     qtimerCom->start(5000);
+
+    //connect(arduinoSerial, &seriallink::gotNewData, this, &MainWindow::print_serial); // How to do it ?
 }
 
 MainWindow::~MainWindow()
@@ -158,5 +160,9 @@ void MainWindow::on_connect_button_clicked()
         ui->label_connexion_status->setStyleSheet("QLabel { color : red; }");
         ui->label_connexion_status->setText("Connexion fail !");
     }
+}
+
+void MainWindow::print_serial(){
+    //arduinoSerial->read(); // How to do it ?
 }
 
