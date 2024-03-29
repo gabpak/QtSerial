@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     , isConnected(false)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
 
     // Listing all the COMs available on the computer
@@ -64,7 +65,7 @@ void MainWindow::refresh_com_detection()
                 ui->connect_button->setEnabled(true);
                 ui->com_comboBox->setEnabled(true);
                 ui->baud_comboBox->setEnabled(true);
-                ui->plainTextEdit->setEnabled(false);
+                ui->send_browser->setEnabled(false);
                 // On supprime le droit à l'utilisateur d'envoyer des messages sur le port serie
                 ui->send_button->setEnabled(false);
             }
@@ -150,7 +151,7 @@ void MainWindow::on_connect_button_clicked()
         ui->connect_button->setEnabled(false);
         ui->com_comboBox->setEnabled(false);
         ui->baud_comboBox->setEnabled(false);
-        ui->plainTextEdit->setEnabled(true);
+        ui->send_browser->setEnabled(true);
         // On permet à l'utilisateur d'envoyer des messages sur le port serie
         ui->send_button->setEnabled(true);
 
@@ -163,8 +164,36 @@ void MainWindow::on_connect_button_clicked()
     }
 }
 
+void MainWindow::on_send_button_clicked()
+{
+    if(arduinoSerial){ // Normalement le bouton est grisé, mais au cas ou :)
+        if(arduinoSerial->isWritable()){
+            QString stringText = ui->send_browser->toPlainText();
+
+            // Optionnal ?
+            if(stringText.length() > 19){
+                stringText = stringText.left(19);
+            }
+
+            stringText.replace(" ", "_"); // Supprime les caractères espaces
+            stringText.replace("\n", ""); // Supprime les caractères de nouvelle ligne
+            stringText.replace("\r", ""); // Supprime les caractères de retour chariot
+            qDebug() << ":" << stringText;
+
+            std::string str = stringText.toStdString();
+
+            arduinoSerial->write(str.c_str());
+            ui->send_browser->clear();
+        }
+    }
+}
+
+
 void MainWindow::print_serial(){
     ui->textBrowser->append("> " + arduinoSerial->getSerialData());
     qDebug() << arduinoSerial->getSerialData();
 }
+
+
+
 

@@ -33,7 +33,9 @@ private slots:
 
     void refresh_com_detection();
     void on_connect_button_clicked();
+    void on_send_button_clicked();
     void print_serial();
+
 
 private:
     Ui::MainWindow *ui;
