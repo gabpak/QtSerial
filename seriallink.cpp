@@ -1,6 +1,7 @@
 #include <QDebug>
 #include "seriallink.h"
 
+// Constructor
 seriallink::seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObject *parent)
     : QObject{parent}
 {
@@ -17,10 +18,12 @@ seriallink::seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObje
     connect(&_serial, &QSerialPort::readyRead, this, &seriallink::read);
 }
 
+// Destructor
 seriallink::~seriallink(){
     closeConnection();
 }
 
+// Public
 bool seriallink::openConnection(){
     if(!_serial.open(QIODevice::ReadWrite)){
         qDebug() << "Connexion not possible";
@@ -33,28 +36,42 @@ bool seriallink::openConnection(){
 }
 
 
+// Public
 void seriallink::closeConnection(){
     _serial.close();
 }
 
+// Public
 void seriallink::write(const char* messageToWrite){
     _serial.write(messageToWrite);
 }
 
+// Public
 bool seriallink::isOpen(){
     return _serial.isOpen();
 }
 
+// Public
 bool seriallink::isWritable(){
     return _serial.isWritable();
 }
 
+// Public
 bool seriallink::isReadable(){
     return _serial.isReadable();
 }
 
+// Public
+QByteArray seriallink::getSerialData(){
+    return this->dataReceived;
+}
+
+// Private
 void seriallink::read(){
-    QByteArray dataReceived = _serial.readAll();
+    dataReceived.clear();
+    dataReceived = _serial.readAll();
     qDebug() << dataReceived;
     emit gotNewData(dataReceived);
 }
+
+

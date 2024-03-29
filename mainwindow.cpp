@@ -27,8 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
     qtimerCom = new QTimer(this);
     connect(qtimerCom, &QTimer::timeout, this, &MainWindow::refresh_com_detection);
     qtimerCom->start(5000);
-
-    //connect(arduinoSerial, &seriallink::gotNewData, this, &MainWindow::print_serial); // How to do it ?
 }
 
 MainWindow::~MainWindow()
@@ -51,6 +49,7 @@ void MainWindow::refresh_com_detection()
             ui->com_comboBox->removeItem(i);
             --i;
             if(isConnected == true){
+                disconnect(arduinoSerial, &seriallink::gotNewData, this, &MainWindow::print_serial);
                 qDebug() << "COM HAS BEEN DECONNECTED";
                 ui->label_connexion_status->setText("Disconnected !");
                 ui->label_connexion_status->setStyleSheet("QLabel { color : red; }");
@@ -154,6 +153,8 @@ void MainWindow::on_connect_button_clicked()
         ui->plainTextEdit->setEnabled(true);
         // On permet à l'utilisateur d'envoyer des messages sur le port serie
         ui->send_button->setEnabled(true);
+
+        connect(arduinoSerial, &seriallink::gotNewData, this, &MainWindow::print_serial); // How to do it ?
     }
     // CONNECTION SERIE NON OK :(
     else{
@@ -163,6 +164,7 @@ void MainWindow::on_connect_button_clicked()
 }
 
 void MainWindow::print_serial(){
-    //arduinoSerial->read(); // How to do it ?
+    ui->textBrowser->append("> " + arduinoSerial->getSerialData());
+    qDebug() << arduinoSerial->getSerialData();
 }
 

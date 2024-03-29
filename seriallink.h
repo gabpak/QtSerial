@@ -20,13 +20,16 @@ public:
     bool isOpen();
     bool isWritable();
     bool isReadable();
-    void read(); // Called when a signal is received
+    QByteArray getSerialData(); // Getter
 
 signals:
-    void gotNewData(QByteArray data);
+    QByteArray gotNewData(QByteArray data);
 
 private:
+    void read(); // Called when a signal is received
+
     QSerialPort _serial;
+    QByteArray dataReceived;
 
 };
 
