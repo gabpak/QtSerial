@@ -7,12 +7,12 @@
 #include <QPushButton>
 #include <QSqlQuery> // TODO
 
-class seriallink : public QObject
+class Seriallink : public QObject
 {
     Q_OBJECT
 public:
-    explicit seriallink(const QString &com = "COM1", QSerialPort::BaudRate baudrate = QSerialPort::BaudRate::Baud9600, QObject *parent = nullptr);
-    ~seriallink();
+    explicit Seriallink(const QString &com = "COM1", QSerialPort::BaudRate baudrate = QSerialPort::BaudRate::Baud9600, QObject *parent = nullptr);
+    ~Seriallink();
 
     bool openConnection();
     void closeConnection();

@@ -50,10 +50,10 @@ void MainWindow::refresh_com_detection()
             ui->com_comboBox->removeItem(i);
             --i;
             if(isConnected == true){
-                disconnect(arduinoSerial, &seriallink::gotNewData, this, &MainWindow::print_serial);
+                disconnect(arduinoSerial, &Seriallink::gotNewData, this, &MainWindow::print_serial);
                 qDebug() << "COM HAS BEEN DECONNECTED";
-                ui->label_connexion_status->setText("Disconnected !");
-                ui->label_connexion_status->setStyleSheet("QLabel { color : red; }");
+                ui->label_serial_connexion->setText("Disconnected !");
+                ui->label_serial_connexion->setStyleSheet("QLabel { color : red; }");
 
                 isConnected = false;
                 if(arduinoSerial){
@@ -62,12 +62,13 @@ void MainWindow::refresh_com_detection()
                 }
 
                 // On débloque les boutons pour pouvoir relancer une connexion
-                ui->connect_button->setEnabled(true);
+                ui->connect_serial_button->setEnabled(true);
                 ui->com_comboBox->setEnabled(true);
                 ui->baud_comboBox->setEnabled(true);
                 ui->send_browser->setEnabled(false);
                 // On supprime le droit à l'utilisateur d'envoyer des messages sur le port serie
                 ui->send_button->setEnabled(false);
+                ui->disconnect_serial_button->setEnabled(false);
             }
         }
     }
@@ -114,7 +115,7 @@ void MainWindow::on_p_ledOff_clicked()
 }
 */
 
-void MainWindow::on_connect_button_clicked()
+void MainWindow::on_connect_serial_button_clicked()
 {
     QString COMSelectionned = ui->com_comboBox->currentText();
 
@@ -138,29 +139,30 @@ void MainWindow::on_connect_button_clicked()
         baudRateCombotBox = QSerialPort::BaudRate::Baud115200;
 
     qDebug() << "Connexion with COM: " << COMSelectionned << " / Baud Rate: " << selectedBaudRate << '\n';
-    arduinoSerial = new seriallink(COMSelectionned, baudRateCombotBox);
+    arduinoSerial = new Seriallink(COMSelectionned, baudRateCombotBox);
 
     // Ajouter verification de validité de pointeur ici
 
     // CONNECTION SERIE OK :)
     if(arduinoSerial->openConnection()){
         isConnected = true;
-        ui->label_connexion_status->setText("Connected");
-        ui->label_connexion_status->setStyleSheet("QLabel { color : green; }");
+        ui->label_serial_connexion->setText("Connected");
+        ui->label_serial_connexion->setStyleSheet("QLabel { color : green; }");
         // On bloque les boutons pour eviter de se connecter plusieurs fois
-        ui->connect_button->setEnabled(false);
+        ui->connect_serial_button->setEnabled(false);
         ui->com_comboBox->setEnabled(false);
         ui->baud_comboBox->setEnabled(false);
         ui->send_browser->setEnabled(true);
         // On permet à l'utilisateur d'envoyer des messages sur le port serie
         ui->send_button->setEnabled(true);
+        ui->disconnect_serial_button->setEnabled(true);
 
-        connect(arduinoSerial, &seriallink::gotNewData, this, &MainWindow::print_serial); // How to do it ?
+        connect(arduinoSerial, &Seriallink::gotNewData, this, &MainWindow::print_serial); // How to do it ?
     }
     // CONNECTION SERIE NON OK :(
     else{
-        ui->label_connexion_status->setStyleSheet("QLabel { color : red; }");
-        ui->label_connexion_status->setText("Connexion fail !");
+        ui->label_serial_connexion->setStyleSheet("QLabel { color : red; }");
+        ui->label_serial_connexion->setText("Connexion fail !");
     }
 }
 
@@ -188,12 +190,38 @@ void MainWindow::on_send_button_clicked()
     }
 }
 
+void MainWindow::on_disconnect_serial_button_clicked()
+{
+    if(isConnected == true){
+        delete arduinoSerial;
+        arduinoSerial = nullptr;
+
+        isConnected = false;
+        disconnect(arduinoSerial, &Seriallink::gotNewData, this, &MainWindow::print_serial);
+
+        qDebug() << "COM HAS BEEN DECONNECTED";
+        ui->label_serial_connexion->setText("Disconnected !");
+        ui->label_serial_connexion->setStyleSheet("QLabel { color : red; }");
+
+        if(arduinoSerial){
+            arduinoSerial = nullptr;
+            delete arduinoSerial;
+        }
+
+        // On débloque les boutons pour pouvoir relancer une connexion
+        ui->connect_serial_button->setEnabled(true);
+        ui->com_comboBox->setEnabled(true);
+        ui->baud_comboBox->setEnabled(true);
+        ui->send_browser->setEnabled(false);
+        // On supprime le droit à l'utilisateur d'envoyer des messages sur le port serie
+        ui->send_button->setEnabled(false);
+        ui->disconnect_serial_button->setEnabled(false);
+    }
+}
+
 
 void MainWindow::print_serial(){
     ui->textBrowser->append("> " + arduinoSerial->getSerialData());
     qDebug() << arduinoSerial->getSerialData();
 }
-
-
-
 

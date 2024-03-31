@@ -1,8 +1,8 @@
 #include <QDebug>
-#include "seriallink.h"
+#include "Seriallink.h"
 
 // Constructor
-seriallink::seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObject *parent)
+Seriallink::Seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObject *parent)
     : QObject{parent}
 {
     // Initialisation of the serial communication
@@ -15,16 +15,16 @@ seriallink::seriallink(const QString &com, QSerialPort::BaudRate baudrate, QObje
     _serial.setFlowControl(QSerialPort::NoFlowControl);
 
                             // Signal                       // Slot
-    connect(&_serial, &QSerialPort::readyRead, this, &seriallink::read);
+    connect(&_serial, &QSerialPort::readyRead, this, &Seriallink::read);
 }
 
 // Destructor
-seriallink::~seriallink(){
+Seriallink::~Seriallink(){
     closeConnection();
 }
 
 // Public
-bool seriallink::openConnection(){
+bool Seriallink::openConnection(){
     if(!_serial.open(QIODevice::ReadWrite)){
         qDebug() << "Connexion not possible";
         return false;
@@ -37,37 +37,37 @@ bool seriallink::openConnection(){
 
 
 // Public
-void seriallink::closeConnection(){
+void Seriallink::closeConnection(){
     _serial.close();
 }
 
 // Public
-void seriallink::write(const char* messageToWrite){
+void Seriallink::write(const char* messageToWrite){
     _serial.write(messageToWrite);
 }
 
 // Public
-bool seriallink::isOpen(){
+bool Seriallink::isOpen(){
     return _serial.isOpen();
 }
 
 // Public
-bool seriallink::isWritable(){
+bool Seriallink::isWritable(){
     return _serial.isWritable();
 }
 
 // Public
-bool seriallink::isReadable(){
+bool Seriallink::isReadable(){
     return _serial.isReadable();
 }
 
 // Public
-QByteArray seriallink::getSerialData(){
+QByteArray Seriallink::getSerialData(){
     return this->dataReceived;
 }
 
 // Private
-void seriallink::read(){
+void Seriallink::read(){
     dataReceived.clear();
     dataReceived = _serial.readAll();
     qDebug() << dataReceived;
