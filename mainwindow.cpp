@@ -57,8 +57,8 @@ void MainWindow::refresh_com_detection()
 
                 isConnected = false;
                 if(arduinoSerial){
-                    arduinoSerial = nullptr;
                     delete arduinoSerial;
+                    arduinoSerial = nullptr;
                 }
 
                 // On débloque les boutons pour pouvoir relancer une connexion
@@ -193,20 +193,18 @@ void MainWindow::on_send_button_clicked()
 void MainWindow::on_disconnect_serial_button_clicked()
 {
     if(isConnected == true){
-        delete arduinoSerial;
-        arduinoSerial = nullptr;
-
         isConnected = false;
+
         disconnect(arduinoSerial, &Seriallink::gotNewData, this, &MainWindow::print_serial);
 
-        qDebug() << "COM HAS BEEN DECONNECTED";
+        if(arduinoSerial){
+            delete arduinoSerial;
+            arduinoSerial = nullptr;
+        }
+
+        qDebug() << "DISCONNECTION: COM HAS BEEN DECONNECTED";
         ui->label_serial_connexion->setText("Disconnected !");
         ui->label_serial_connexion->setStyleSheet("QLabel { color : red; }");
-
-        if(arduinoSerial){
-            arduinoSerial = nullptr;
-            delete arduinoSerial;
-        }
 
         // On débloque les boutons pour pouvoir relancer une connexion
         ui->connect_serial_button->setEnabled(true);
