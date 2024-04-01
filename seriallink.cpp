@@ -70,7 +70,7 @@ QByteArray Seriallink::getSerialData(){
 void Seriallink::read(){
     dataReceived.clear();
     dataReceived = _serial.readAll();
-    qDebug() << dataReceived;
+    //qDebug() << dataReceived;
     emit gotNewData(dataReceived);
 }
 

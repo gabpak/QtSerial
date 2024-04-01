@@ -22,15 +22,7 @@ public:
 
     bool isConnected; // Connected to a serial instance
 
-public slots:
-    //void updateGUI(QByteArray data);
-
 private slots:
-    /*
-    void on_p_ledOn_clicked();
-    void on_p_ledOff_clicked();
-    */
-
     void refresh_com_detection();
     void on_connect_serial_button_clicked();
     void on_send_button_clicked();

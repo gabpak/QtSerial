@@ -53,19 +53,6 @@
      <enum>Qt::DefaultContextMenu</enum>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="send_browser">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>380</y>
-      <width>351</width>
-      <height>41</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="send_button">
     <property name="enabled">
      <bool>false</bool>
@@ -431,6 +418,25 @@
       </property>
      </widget>
     </widget>
+   </widget>
+   <widget class="QLineEdit" name="send_browser">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>390</y>
+      <width>361</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>true</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

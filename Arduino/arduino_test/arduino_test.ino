@@ -10,8 +10,6 @@ void loop() {
     // Lecture des données jusqu'à ce qu'un caractère de retour à la ligne ou un espace soit rencontré
     readData(receivedData, sizeof(receivedData));
     
-    Serial.println(receivedData); // Affichage des données reçues
-    
     // Comparaison des données reçues avec une autre chaîne de caractères
     if(isStringEqual(receivedData, "ECE")) {
       Serial.println("CONF");

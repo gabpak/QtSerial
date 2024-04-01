@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     qtimerCom = new QTimer(this);
     connect(qtimerCom, &QTimer::timeout, this, &MainWindow::refresh_com_detection);
     qtimerCom->start(5000);
+
+    //Binding the enter key to the send_browser
+    connect(ui->send_browser, &QLineEdit::returnPressed, this, &MainWindow::on_send_button_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -97,24 +100,6 @@ void MainWindow::refresh_com_detection()
     }
 }
 
-/*
-void MainWindow::on_p_ledOn_clicked()
-{
-    if(arduinoSerial->isWritable())
-        arduinoSerial->write("o");
-    else
-        qDebug() << "Couldn't write to serial";
-}
-
-void MainWindow::on_p_ledOff_clicked()
-{
-    if(arduinoSerial->isWritable())
-        arduinoSerial->write("n");
-    else
-        qDebug() << "Couldn't write to serial";
-}
-*/
-
 void MainWindow::on_connect_serial_button_clicked()
 {
     QString COMSelectionned = ui->com_comboBox->currentText();
@@ -157,7 +142,7 @@ void MainWindow::on_connect_serial_button_clicked()
         ui->send_button->setEnabled(true);
         ui->disconnect_serial_button->setEnabled(true);
 
-        connect(arduinoSerial, &Seriallink::gotNewData, this, &MainWindow::print_serial); // How to do it ?
+        connect(arduinoSerial, &Seriallink::gotNewData, this, &MainWindow::print_serial);
     }
     // CONNECTION SERIE NON OK :(
     else{
@@ -170,21 +155,15 @@ void MainWindow::on_send_button_clicked()
 {
     if(arduinoSerial){ // Normalement le bouton est grisé, mais au cas ou :)
         if(arduinoSerial->isWritable()){
-            QString stringText = ui->send_browser->toPlainText();
-
-            // Optionnal ?
-            if(stringText.length() > 19){
-                stringText = stringText.left(19);
-            }
-
-            stringText.replace(" ", "_"); // Supprime les caractères espaces
-            stringText.replace("\n", ""); // Supprime les caractères de nouvelle ligne
-            stringText.replace("\r", ""); // Supprime les caractères de retour chariot
-            qDebug() << ":" << stringText;
-
+            // Recuperation du text du send_browser
+            QString stringText = ui->send_browser->text();
+             // Permet la conversion entre QString et string.
             std::string str = stringText.toStdString();
-
+            // Affichage sur le text_browser
+            ui->textBrowser->append("< " + stringText);
+             // Envoi sur le port serie
             arduinoSerial->write(str.c_str());
+            // On clean le send_browser
             ui->send_browser->clear();
         }
     }
@@ -210,8 +189,8 @@ void MainWindow::on_disconnect_serial_button_clicked()
         ui->connect_serial_button->setEnabled(true);
         ui->com_comboBox->setEnabled(true);
         ui->baud_comboBox->setEnabled(true);
-        ui->send_browser->setEnabled(false);
         // On supprime le droit à l'utilisateur d'envoyer des messages sur le port serie
+        ui->send_browser->setEnabled(false);
         ui->send_button->setEnabled(false);
         ui->disconnect_serial_button->setEnabled(false);
     }
@@ -222,4 +201,3 @@ void MainWindow::print_serial(){
     ui->textBrowser->append("> " + arduinoSerial->getSerialData());
     qDebug() << arduinoSerial->getSerialData();
 }
-

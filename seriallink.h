@@ -20,7 +20,9 @@ public:
     bool isOpen();
     bool isWritable();
     bool isReadable();
-    QByteArray getSerialData(); // Getter
+
+    // Getter
+    QByteArray getSerialData();
 
 signals:
     QByteArray gotNewData(QByteArray data);
