@@ -3,8 +3,6 @@
 
 #include <QObject>
 #include <QSerialPort>
-#include <QComboBox>
-#include <QPushButton>
 #include <QSqlQuery> // TODO
 
 class Seriallink : public QObject

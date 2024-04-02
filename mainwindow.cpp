@@ -31,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Binding the enter key to the send_browser
     connect(ui->send_browser, &QLineEdit::returnPressed, this, &MainWindow::on_send_button_clicked);
+
+    // Database
+    database = new SQLManagement(this);
+    database->createConnection();
 }
 
 MainWindow::~MainWindow()
@@ -89,6 +93,7 @@ void MainWindow::refresh_com_detection()
         // EXIT_FAILURE; // Peut-être excessif :)
     } else {
         for (const QSerialPortInfo &info : availablePorts) {
+            /*
             qDebug() << "  Nom : " << info.portName();
             qDebug() << "  Description : " << info.description();
             qDebug() << "  Fabricant : " << info.manufacturer();
@@ -96,6 +101,7 @@ void MainWindow::refresh_com_detection()
             qDebug() << "  Identifiant du vendeur : " << info.vendorIdentifier();
             qDebug() << "  Emplacement système : " << info.systemLocation();
             qDebug() << "---------------------------------";
+            */
         }
     }
 }
@@ -124,7 +130,7 @@ void MainWindow::on_connect_serial_button_clicked()
         baudRateCombotBox = QSerialPort::BaudRate::Baud115200;
 
     qDebug() << "Connexion with COM: " << COMSelectionned << " / Baud Rate: " << selectedBaudRate << '\n';
-    arduinoSerial = new Seriallink(COMSelectionned, baudRateCombotBox);
+    arduinoSerial = new Seriallink(COMSelectionned, baudRateCombotBox, this);
 
     // Ajouter verification de validité de pointeur ici
 
@@ -201,3 +207,9 @@ void MainWindow::print_serial(){
     ui->textBrowser->append("> " + arduinoSerial->getSerialData());
     qDebug() << arduinoSerial->getSerialData();
 }
+
+void MainWindow::on_clear_pushButton_clicked()
+{
+    ui->textBrowser->clear();
+}
+

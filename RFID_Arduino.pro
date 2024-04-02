@@ -13,11 +13,13 @@ RC_ICONS = ressources/ece.ico
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    seriallink.cpp
+    seriallink.cpp \
+    sqlmanagement.cpp
 
 HEADERS += \
     mainwindow.h \
-    seriallink.h
+    seriallink.h \
+    sqlmanagement.h
 
 FORMS += \
     mainwindow.ui

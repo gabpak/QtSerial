@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "seriallink.h"
+#include "sqlmanagement.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,10 +29,12 @@ private slots:
     void on_send_button_clicked();
     void on_disconnect_serial_button_clicked();
     void print_serial();
+    void on_clear_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     Seriallink *arduinoSerial;
+    SQLManagement *database;
     QTimer *qtimerCom;
 };
 #endif // MAINWINDOW_H
