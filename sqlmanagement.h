@@ -2,10 +2,11 @@
 #define SQLMANAGEMENT_H
 
 #include <QObject>
-//#include <QSqlDatabase>
-//#include <QSqlQuery>
 #include <QtSql>
 #include <QDebug>
+
+//#include <QSqlDatabase>
+//#include <QSqlQuery>
 
 /*
 *   Databse information:
@@ -26,6 +27,8 @@ public:
 	// Methods
     bool createConnection();
     bool closeConnection();
+    bool showDatabase(); // Just for debug :)
+    QString getID(QString id); // Get the informations based on the rfid_id
 
 private:
     QSqlDatabase _database;

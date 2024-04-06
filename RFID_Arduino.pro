@@ -24,8 +24,14 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../wamp64/bin/mysql/mysql8.2.0/lib -llibmysql
+
+INCLUDEPATH += $$PWD/../../../../../../wamp64/bin/mysql/mysql8.2.0/lib
+DEPENDPATH += $$PWD/../../../../../../wamp64/bin/mysql/mysql8.2.0/lib

@@ -87,13 +87,12 @@ void MainWindow::refresh_com_detection()
             ui->com_comboBox->addItem(portName);
         }
     }
-
+    /*
     if (availablePortNames.isEmpty()) {
         qDebug() << "Warning: Aucun port série n'est disponible";
         // EXIT_FAILURE; // Peut-être excessif :)
     } else {
         for (const QSerialPortInfo &info : availablePorts) {
-            /*
             qDebug() << "  Nom : " << info.portName();
             qDebug() << "  Description : " << info.description();
             qDebug() << "  Fabricant : " << info.manufacturer();
@@ -101,9 +100,8 @@ void MainWindow::refresh_com_detection()
             qDebug() << "  Identifiant du vendeur : " << info.vendorIdentifier();
             qDebug() << "  Emplacement système : " << info.systemLocation();
             qDebug() << "---------------------------------";
-            */
-        }
     }
+    */
 }
 
 void MainWindow::on_connect_serial_button_clicked()
@@ -205,7 +203,11 @@ void MainWindow::on_disconnect_serial_button_clicked()
 
 void MainWindow::print_serial(){
     ui->textBrowser->append("> " + arduinoSerial->getSerialData());
-    qDebug() << arduinoSerial->getSerialData();
+    QString stringText = database->getID(arduinoSerial->getSerialData());
+
+    std::string str = stringText.toStdString();
+    qDebug() << str;
+    //qDebug() << arduinoSerial->getSerialData();
 }
 
 void MainWindow::on_clear_pushButton_clicked()
