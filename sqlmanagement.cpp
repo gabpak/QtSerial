@@ -51,7 +51,7 @@ bool SQLManagement::showDatabase(){
     QList<QVariantMap> usersData;
     QSqlQuery query;
 
-    if(query.prepare("SELECT id, rfid_id, prenom, nom, droit FROM users")){
+    if(query.prepare("SELECT id, rfid_id, prenom, nom, droit, credit FROM users")){
         qDebug() << "PREPARE OK";
         if (!query.exec()) {
             qDebug() << "Error executing last query : " << query.lastError().text();
@@ -64,6 +64,7 @@ bool SQLManagement::showDatabase(){
             userData["prenom"] = query.value("prenom");
             userData["nom"] = query.value("nom");
             userData["droit"] = query.value("droit");
+            userData["credit"] = query.value("credit");
             usersData.append(userData);
         }
         if (!query.next()) {
@@ -83,6 +84,7 @@ bool SQLManagement::showDatabase(){
         qDebug() << "Prenom: " << userData["prenom"].toString();
         qDebug() << "Nom: " << userData["nom"].toString();
         qDebug() << "Droit: " << userData["droit"].toString();
+        qDebug() << "Credit: " << userData["credit"].toString();
         qDebug() << "-----------";
     }
 
@@ -94,7 +96,7 @@ QString SQLManagement::getID(QString rfid_id){
     QList<QVariantMap> usersData;
     QSqlQuery query;
 
-    if(query.prepare("SELECT id, rfid_id, prenom, nom, droit FROM users")){
+    if(query.prepare("SELECT id, rfid_id, prenom, nom, droit, credit FROM users")){
         //qDebug() << "PREPARE OK";
         if (!query.exec()) {
             qDebug() << "Error executing last query : " << query.lastError().text();
@@ -107,6 +109,7 @@ QString SQLManagement::getID(QString rfid_id){
             userData["prenom"] = query.value("prenom");
             userData["nom"] = query.value("nom");
             userData["droit"] = query.value("droit");
+            userData["credit"] = query.value("credit");
             usersData.append(userData);
         }
         /*
@@ -127,12 +130,13 @@ QString SQLManagement::getID(QString rfid_id){
             return userData["id"].toString() + "|" +
                    userData["prenom"].toString() + "|" +
                    userData["nom"].toString() + "|" +
-                   userData["droit"].toString();
+                   userData["droit"].toString() + "|" +
+                   userData["credit"].toString();
         }
     }
 
     qDebug() << "UID NOT FOUND IN THE DATABASE";
-    return "0|NULL|NULL|NULL";
+    return "0|NULL|NULL|NULL|0";
     //return "NULL";
 }
 

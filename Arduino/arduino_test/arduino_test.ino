@@ -43,10 +43,6 @@ int cardUID[4] = {0x00, 0x00, 0x00, 0x00};
 
 // Functions
 
-void displayOLED(char* c){
-  
-}
-
 void displayColor(byte color) {
   digitalWrite(RGB_LED_RED, !bitRead(color, 2));
   digitalWrite(RGB_LED_GREEN, !bitRead(color, 1));
@@ -67,10 +63,10 @@ void readData(char* buffer, size_t bufferSize) {
   buffer[index] = '\0'; // Ajouter le caractère de fin de chaîne
 }
 
-void parseData(char* data, char* id, char* prenom, char* nom, char* acces) {
+void parseData(char* data, char* id, char* prenom, char* nom, char* acces, char* credit) {
   // Utilisation de strtok pour séparer la chaîne en sous-chaînes
   char* token = strtok(data, "|");
-  
+
   // Copie de chaque sous-chaîne dans les variables correspondantes
   if (token != NULL) {
     strcpy(id, token);
@@ -83,12 +79,21 @@ void parseData(char* data, char* id, char* prenom, char* nom, char* acces) {
         token = strtok(NULL, "|");
         if (token != NULL) {
           strcpy(acces, token);
+          token = strtok(NULL, "|");
+          if (token != NULL) {
+            strcpy(credit, token);
+          }
         }
       }
     }
-  }else{
-    id = 'x';
   }
+}
+
+void buzz(int del){
+    // BUZZER REFUSE
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(del);
+    digitalWrite(BUZZER_PIN, LOW);
 }
 
 // -------------------------------------------------------------------------------------------
@@ -186,8 +191,8 @@ void loop() {
   // Créer une copie de dataFromSerial car strtok modifie la chaîne d'origine
   char dataCopy[32];
   strcpy(dataCopy, dataFromSerial);
+  parseData(dataCopy, id, prenom, nom, acces, credit);
 
-  parseData(dataCopy, id, prenom, nom, acces);
 
   // Clear the display buffer.
   display.clearDisplay();
@@ -199,9 +204,20 @@ void loop() {
     display.setCursor(0,0);
     display.print("Please check database");
     display.display();
+    buzz(500);
+    //displayColor(COLOR_RED);
     return;
   }
 
+  if (strcmp(prenom, "NULL") == 0) {
+    display.print("User not known");
+    display.display();
+    buzz(250);
+    return;
+  }
+
+  buzz(50);
+  //displayColor(COLOR_GREEN);
   // Prenom
   display.print("Prenom: ");
   display.println(prenom);
@@ -209,47 +225,12 @@ void loop() {
   display.setCursor(0,10);
   display.print("Nom: ");
   display.println(nom);
+  // Credit
+  display.setCursor(0,20);
+  display.print("Credit: ");
+  display.println(strlen(prenom));
   // Display
   display.display();
-
-
-
-  /*
-  char* receivedData;
-  readData(receivedData, sizeof(receivedData));
-  if(receivedData != "NULL"){
-    // BUZZER ACCEPT
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(100);
-    digitalWrite(BUZZER_PIN, LOW);
-
-  }
-  else{
-    // BUZZER REFUSE
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(1000);
-    digitalWrite(BUZZER_PIN, LOW);
-  }
-  */
-  
-  /*
-  if(cardUID[0] == password[0] && cardUID[1] == password[1] && cardUID[2] == password[2] && cardUID[3] == password[3]){
-    Serial.print("Access granted\n");
-    displayColor(COLOR_BLUE);
-    // BUZZER
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(100);
-    digitalWrite(BUZZER_PIN, LOW);
-    delay(900);
-  } else {
-    Serial.print("Access denied\n");
-    displayColor(COLOR_RED);
-    // BUZZER
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(1000);
-    digitalWrite(BUZZER_PIN, LOW);
-  }
-  */
 
   delay(750);
   // Reset LED
