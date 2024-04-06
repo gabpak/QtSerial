@@ -94,6 +94,7 @@ void buzz(int del){
     digitalWrite(BUZZER_PIN, HIGH);
     delay(del);
     digitalWrite(BUZZER_PIN, LOW);
+    delay(50);
 }
 
 // -------------------------------------------------------------------------------------------
@@ -204,7 +205,7 @@ void loop() {
     display.setCursor(0,0);
     display.print("Please check database");
     display.display();
-    buzz(500);
+    buzz(300);
     //displayColor(COLOR_RED);
     return;
   }
@@ -212,7 +213,9 @@ void loop() {
   if (strcmp(prenom, "NULL") == 0) {
     display.print("User not known");
     display.display();
-    buzz(250);
+    buzz(50);
+    buzz(50);
+    buzz(50);
     return;
   }
 
@@ -228,7 +231,7 @@ void loop() {
   // Credit
   display.setCursor(0,20);
   display.print("Credit: ");
-  display.println(strlen(prenom));
+  display.println(credit);
   // Display
   display.display();
 
