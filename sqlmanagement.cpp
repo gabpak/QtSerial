@@ -123,7 +123,7 @@ QString SQLManagement::getID(QString rfid_id){
 
     for(const QVariantMap &userData : usersData){
         if(userData["rfid_id"].toString() == rfid_id){
-            //qDebug() << "UID FOUND IN THE DATABASE";
+            qDebug() << "UID FOUND IN THE DATABASE";
             return userData["id"].toString() + "|" +
                    userData["prenom"].toString() + "|" +
                    userData["nom"].toString() + "|" +
@@ -131,7 +131,9 @@ QString SQLManagement::getID(QString rfid_id){
         }
     }
 
-    return "NULL";
+    qDebug() << "UID NOT FOUND IN THE DATABASE";
+    return "0|NULL|NULL|NULL";
+    //return "NULL";
 }
 
 

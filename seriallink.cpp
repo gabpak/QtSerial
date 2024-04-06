@@ -69,9 +69,11 @@ QByteArray Seriallink::getSerialData(){
 // Private
 void Seriallink::read(){
     dataReceived.clear();
-    dataReceived = _serial.readAll();
-    //qDebug() << dataReceived;
-    emit gotNewData(dataReceived);
+    if(_serial.bytesAvailable() >= 7){
+        dataReceived = _serial.readAll();
+        //qDebug() << dataReceived;
+        emit gotNewData(dataReceived);
+    }
 }
 
 
