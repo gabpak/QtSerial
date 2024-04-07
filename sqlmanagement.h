@@ -28,7 +28,8 @@ public:
     bool createConnection();
     bool closeConnection();
     bool showDatabase(); // Just for debug :)
-    QString getID(QString id); // Get the informations based on the rfid_id
+    QString getInfos(QString id); // Get the informations based on the rfid_id
+    bool decrementCredit(const QString& rfid_id);
 
 private:
     QSqlDatabase _database;

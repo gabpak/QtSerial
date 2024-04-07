@@ -40,6 +40,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 int cardUID[4] = {0x00, 0x00, 0x00, 0x00};
+bool readLDR = true;
 
 // Functions
 
@@ -146,14 +147,30 @@ void setup() {
 
 void loop() {
 	delay(50);
+
   // LDR
-  ldrValue = analogRead(LDR_PIN);
-  if(ldrValue < 200){
-    digitalWrite(LED_NIGHT, HIGH);
-  } else if(ldrValue > 220) {
-    digitalWrite(LED_NIGHT, LOW);
+  if(Serial.available()){
+    String incomingString = Serial.readString();
+    incomingString.trim();
+
+    if(incomingString == "/L_OFF"){
+      readLDR = false;
+    } else if(incomingString == "/L_ON"){
+      readLDR = true;
+    }
   }
-  
+
+  if(readLDR){
+    ldrValue = analogRead(LDR_PIN);
+    if(ldrValue < 200){
+      digitalWrite(LED_NIGHT, HIGH);
+    } else if(ldrValue > 220) {
+      digitalWrite(LED_NIGHT, LOW);
+    }
+  }
+
+  // RFID
+    
   // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
 	if (!mfrc522.PICC_IsNewCardPresent()) {
 		return;
@@ -218,22 +235,39 @@ void loop() {
     buzz(50);
     return;
   }
+  
 
   buzz(50);
   //displayColor(COLOR_GREEN);
+  display.print("ID: ");
+  display.println(id);
   // Prenom
+  display.setCursor(0,10);
   display.print("Prenom: ");
   display.println(prenom);
   // Nom
-  display.setCursor(0,10);
+  display.setCursor(0,20);
   display.print("Nom: ");
   display.println(nom);
   // Credit
-  display.setCursor(0,20);
-  display.print("Credit: ");
-  display.println(credit);
-  // Display
-  display.display();
+
+
+  String creditStr = String(credit);
+  int creditInt = creditStr.toInt();
+  if(creditInt < 0){
+    display.setCursor(0,30);
+    display.print("OUT OF CREDIT");
+    display.display();
+    for(int i = 0; i < 10; i++){
+      buzz(50);
+    }
+  }
+  else{
+    display.setCursor(0,30);
+    display.print("Credit: ");
+    display.println(credit);
+    display.display();
+  }
 
   delay(750);
   // Reset LED

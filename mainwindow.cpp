@@ -209,8 +209,10 @@ void MainWindow::on_disconnect_serial_button_clicked()
 
 
 void MainWindow::print_serial(){
-    ui->textBrowser->append("> " + arduinoSerial->getSerialData());
-    QString stringText = database->getID(arduinoSerial->getSerialData());
+    QString id = arduinoSerial->getSerialData();
+    ui->textBrowser->append("> " + id);
+    QString stringText = database->getInfos(id);
+    database->decrementCredit(id); // Decrement the credit
     std::string str = stringText.toStdString();
 
     if(str != "NULL"){

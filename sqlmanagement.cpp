@@ -92,7 +92,7 @@ bool SQLManagement::showDatabase(){
 }
 
 // Get the informations based on the rfid_id
-QString SQLManagement::getID(QString rfid_id){
+QString SQLManagement::getInfos(QString rfid_id){
     QList<QVariantMap> usersData;
     QSqlQuery query;
 
@@ -140,6 +140,43 @@ QString SQLManagement::getID(QString rfid_id){
     //return "NULL";
 }
 
+bool SQLManagement::decrementCredit(const QString& rfid_id) {
+    QSqlQuery query;
+
+    // Get credit of user
+    if(query.prepare("SELECT credit FROM users WHERE rfid_id = ?")) {
+        query.addBindValue(rfid_id);
+        if (!query.exec()) {
+            qDebug() << "Error executing last query : " << query.lastError().text();
+            return false;
+        }
+        if (query.next()) {
+            int currentCredit = query.value("credit").toInt();
+            currentCredit--;
+
+            // Database update
+            if(query.prepare("UPDATE users SET credit = ? WHERE rfid_id = ?")) {
+                query.addBindValue(currentCredit);
+                query.addBindValue(rfid_id);
+                if (!query.exec()) {
+                    qDebug() << "Error executing last query : " << query.lastError().text();
+                    return false;
+                }
+                qDebug() << "Credit decremented successfully";
+                return true;
+            } else {
+                qDebug() << "Error preparing last query : " << query.lastError().text();
+                return false;
+            }
+        } else {
+            qDebug() << "No rows returned for decrementing";
+            return false;
+        }
+    } else {
+        qDebug() << "Error preparing last query : " << query.lastError().text();
+        return false;
+    }
+}
 
 
 
