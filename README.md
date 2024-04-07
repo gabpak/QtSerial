@@ -1,2 +1,3 @@
 Simple programme pour la commuunication serie.
-![ECESerial](https://github.com/gabpak/QtSerial/assets/106560023/3dd7b15b-0155-4ab4-9039-35805a45c79d)
+
+![ECESerial](https://github.com/gabpak/QtSerial/assets/106560023/4c8d9ade-ff28-408e-b288-c9eabdd28bf2)
