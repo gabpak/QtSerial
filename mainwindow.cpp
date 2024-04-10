@@ -11,9 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
-    ui->label_database_connect->setText("Not connected !");
-    ui->label_database_connect->setStyleSheet("QLabel { color : red; }");
-
     // Listing all the COMs available on the computer
     refresh_com_detection();
 
@@ -34,14 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Binding the enter key to the send_browser
     connect(ui->send_browser, &QLineEdit::returnPressed, this, &MainWindow::on_send_button_clicked);
-
-    // Database
-    database = new SQLManagement(this);
-    if(database->createConnection()){
-        // Indicateur sur IHM
-        ui->label_database_connect->setText("Connected");
-        ui->label_database_connect->setStyleSheet("QLabel { color : green; }");
-    }
 }
 
 MainWindow::~MainWindow()
@@ -209,30 +198,11 @@ void MainWindow::on_disconnect_serial_button_clicked()
 
 
 void MainWindow::print_serial(){
-    QString id = arduinoSerial->getSerialData();
-    ui->textBrowser->append("> " + id);
-    QString stringText = database->getInfos(id);
-    database->decrementCredit(id); // Decrement the credit
-    std::string str = stringText.toStdString();
-
-    if(str != "NULL"){
-        qDebug() << stringText;
-         ui->textBrowser->append("< " + stringText + '\n');
-        // We send the information back to the serial
-        if(arduinoSerial->isWritable()){
-            arduinoSerial->write(str.c_str());
-        }
-    }
-    else{
-        ui->textBrowser->append("******** [INFO] USER DOES NOT EXIST [INFO] ********\n");
-        if(arduinoSerial->isWritable()){
-            arduinoSerial->write("NULL");
-        }
-    }
+    QString str = arduinoSerial->getSerialData();
+    ui->textBrowser->append("> " + str);
 }
 
-void MainWindow::on_clear_pushButton_clicked()
-{
+void MainWindow::on_clear_pushButton_clicked(){
     ui->textBrowser->clear();
 }
 
