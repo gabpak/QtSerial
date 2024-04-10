@@ -12,11 +12,11 @@ QtSerial est un programme simple et facile à utiliser pour la communication sé
 
 ## Capture d'écran
 
-![ECESerial](https://github.com/gabpak/QtSerial/assets/106560023/4c8d9ade-ff28-408e-b288-c9eabdd28bf2)
+![QtSerial](https://github.com/gabpak/QtSerial/assets/106560023/8926b676-d6e5-4206-9848-643c808f4c5d)
 
 ## Remarques
 
-* L'implémentation du WiFi n'est pas présente dans ce programme.
+* N/A
 
 ## Exigences
 
